@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  remote_user: ansible
+  connection: local
+  become: yes
+  vars_prompt: 
+    name: pkg
+    prompt: would you like to install Jenkins or Artifactory.
+    default: jenkins
+  tasks: 
+    include_roles:
+    - name: jenkins
+      when: pkg == "jenkins"
+    - name: artifactory
+      when: pkg == "artifactory"
+  roles: 
+    - java
+       

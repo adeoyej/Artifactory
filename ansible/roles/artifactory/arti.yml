@@ -1,0 +1,9 @@
+---
+- name: install artifactory
+  hosts: ansibletest2
+  remote_user: ansible
+  become: yes
+  connection: ssh
+  roles: 
+    - artifactory  
+  

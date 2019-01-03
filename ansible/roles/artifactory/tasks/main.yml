@@ -1,0 +1,49 @@
+---
+- name: installing java jdk
+  yum:
+    name: java-1.8.0-openjdk-devel
+    state: present
+
+- name: getting artifactory repo
+  get_url:
+    url: https://bintray.com/jfrog/artifactory-pro-rpms/rpm
+    dest: ~/bintray-jfrog-artifactory-pro-rpms.repo
+    mode: 0777
+
+- name: move the repo to the /etc/ym.repos.d/ directory
+  stat: path=~/bintray-jfrog-artifactory-pro-rpms.repo
+  register: myartifactory
+
+- name: Move the artifactory repo to the yum directory
+  command: mv ~/bintray-jfrog-artifactory-pro-rpms.repo /etc/yum.repos.d/
+  when: myartifactory.stat.exists
+
+- name: install jfrog artifactory pro
+  yum:
+    name: jfrog-artifactory-pro
+    state: present
+
+- name: change directory to the /opt directory
+  command: cd /opt
+
+- name: Creating the /etc/opt/app directory
+  file:
+    path: /opt/app
+    state: directory
+    mode: 0755
+
+- name: change directory to the app directory
+  command: cd /opt/app/
+
+- name: create a symbolic link
+  file:
+    src: /etc/opt/jfrog/artifactory/
+    dest: /opt/app/artifactory
+    owner: ansible
+    group: ansible
+    state: link
+
+- name: Start service httpd, if not started
+  service:
+  name: artifactory
+  state: started

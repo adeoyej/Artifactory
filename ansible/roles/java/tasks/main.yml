@@ -1,0 +1,6 @@
+---
+- name: Install yum
+  yum:
+    name:
+      - wget
+      - java-1.8.0-openjdk
